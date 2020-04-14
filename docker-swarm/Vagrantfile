@@ -33,19 +33,22 @@ SCRIPT
 Vagrant.configure("2") do |config|
  
 # config.vm.synced_folder ".", "/vagrant", automount: true , type: "smb"
+# config.vm.network "forwarded_port", guest: 80, host: 8080
 
  config.vm.define "sd_docker01", primary: true do |sd_docker01|
   # Conf básica na VM
   sd_docker01.vm.provider "virtualbox" do |v|
    v.name = "sd_docker01"
-   v.memory = 1024
+#   v.memory = 1024
+   v.memory = 512
    v.cpus = 1
-   v.gui = true
+#   v.gui = true
   end
   sd_docker01.vm.box = "centos/7"
   sd_docker01.vm.hostname = "docker01"
   sd_docker01.vm.network "private_network", ip: "192.168.56.61"
   sd_docker01.vm.network "private_network", ip: "192.168.50.61", virtualbox__intnet: "dcnet1"
+  sd_docker01.vm.network "forwarded_port", id: "ssh", guest: 22, host: 10221, auto_correct: true, protocol: "tcp"
   # Preparando a máquina para rodar o cluster swarm e instalando utilitários
   sd_docker01.vm.provision "shell", inline: $configurando_vm
   config.trigger.after :provision do |trigger|
@@ -60,14 +63,17 @@ Vagrant.configure("2") do |config|
   # Conf básica na VM
   sd_docker02.vm.provider "virtualbox" do |v|
    v.name = "sd_docker02"
-   v.memory = 1024
+#   v.memory = 1024
+   v.memory = 512
    v.cpus = 1
+#   v.gui = true
   end
   # Conf básica no S.O
   sd_docker02.vm.box = "centos/7"
   sd_docker02.vm.hostname = "docker02"
   sd_docker02.vm.network "private_network", ip: "192.168.56.62"
   sd_docker02.vm.network "private_network", ip: "192.168.50.62", virtualbox__intnet: "dcnet1"
+  sd_docker02.vm.network "forwarded_port", id: "ssh", guest: 22, host: 10222, auto_correct: true, protocol: "tcp"
   # Preparando a máquina para rodar o cluster swarm e instalando utilitários
   sd_docker02.vm.provision "shell", inline: $configurando_vm
  end
@@ -76,14 +82,17 @@ Vagrant.configure("2") do |config|
   # Conf básica na VM
   sd_docker03.vm.provider "virtualbox" do |v|
    v.name = "sd_docker03"
-   v.memory = 1024
+#   v.memory = 1024
+   v.memory = 512
    v.cpus = 1
+#   v.gui = true
   end
   # Conf básica no S.O
   sd_docker03.vm.box = "centos/7"
   sd_docker03.vm.hostname = "docker03"
   sd_docker03.vm.network "private_network", ip: "192.168.56.63"
   sd_docker03.vm.network "private_network", ip: "192.168.50.63", virtualbox__intnet: "dcnet1"
+  sd_docker03.vm.network "forwarded_port", id: "ssh", guest: 22, host: 10223, auto_correct: true, protocol: "tcp"
   # Preparando a máquina para rodar o cluster swarm e instalando utilitários
   sd_docker03.vm.provision "shell", inline: $configurando_vm
  end
@@ -92,14 +101,17 @@ Vagrant.configure("2") do |config|
   # Conf básica na VM
   sd_docker04.vm.provider "virtualbox" do |v|
    v.name = "sd_docker04"
-   v.memory = 1024
+#   v.memory = 1024
+   v.memory = 512
    v.cpus = 1
+#   v.gui = true
   end
   # Conf básica no S.O
   sd_docker04.vm.box = "centos/7"
   sd_docker04.vm.hostname = "docker04"
   sd_docker04.vm.network "private_network", ip: "192.168.56.64"
   sd_docker04.vm.network "private_network", ip: "192.168.50.64", virtualbox__intnet: "dcnet1"
+  sd_docker04.vm.network "forwarded_port", id: "ssh", guest: 22, host: 10224, auto_correct: true, protocol: "tcp"
   # Preparando a máquina para rodar o cluster swarm e instalando utilitários
   sd_docker04.vm.provision "shell", inline: $configurando_vm
  end
@@ -108,14 +120,17 @@ Vagrant.configure("2") do |config|
   # Conf básica na VM
   sd_nginx01.vm.provider "virtualbox" do |v|
    v.name = "sd_nginx01"
-   v.memory = 512
+#   v.memory = 512
+   v.memory = 384
    v.cpus = 1
+#   v.gui = true
   end
   # Conf básica no S.O
   sd_nginx01.vm.box = "centos/7"
   sd_nginx01.vm.hostname = "nginx01"
   sd_nginx01.vm.network "private_network", ip: "192.168.56.71"
   sd_nginx01.vm.network "private_network", ip: "192.168.50.71", virtualbox__intnet: "dcnet1"
+  sd_nginx01.vm.network "forwarded_port", id: "ssh", guest: 22, host: 11221, auto_correct: true, protocol: "tcp"
   # Preparando a máquina para rodar o cluster swarm e instalando utilitários
   sd_nginx01.vm.provision "shell", inline: $nginx
  end
@@ -124,14 +139,17 @@ Vagrant.configure("2") do |config|
   # Conf básica na VM
   sd_nginx02.vm.provider "virtualbox" do |v|
    v.name = "sd_nginx02"
-   v.memory = 512
+#   v.memory = 512
+   v.memory = 384
    v.cpus = 1
+#   v.gui = true
   end
   # Conf básica no S.O
   sd_nginx02.vm.box = "centos/7"
   sd_nginx02.vm.hostname = "nginx02"
   sd_nginx02.vm.network "private_network", ip: "192.168.56.72"
   sd_nginx02.vm.network "private_network", ip: "192.168.50.72", virtualbox__intnet: "dcnet1"
+  sd_nginx02.vm.network "forwarded_port", id: "ssh", guest: 22, host: 11222, auto_correct: true, protocol: "tcp"
   # Preparando a máquina para rodar o cluster swarm e instalando utilitários
   sd_nginx02.vm.provision "shell", inline: $nginx
  end
