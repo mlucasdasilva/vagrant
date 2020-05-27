@@ -31,21 +31,7 @@ sudo cp /vagrant/keepalived-backup.conf /etc/keepalived/keepalived.conf
 sudo systemctl start keepalived
 SCRIPT
 
-$nginx_layer4 = <<-SCRIPT
-sudo mkdir /etc/nginx/conf2.d
-sudo echo "include /etc/nginx/conf2.d/*.conf;" >> /etc/nginx/nginx.conf
-sudo cp /vagrant/port10080.docker-cluster.conf  /etc/nginx/conf2.d/port10080.docker-cluster.conf 
-sudo service nginx restart
-SCRIPT
-
-$port10080_servico_docker = <<-SCRIPT
-sshpass -p vagrant  ssh -oStrictHostKeyChecking=no docker01 docker service rm web
-sleep 5
-sshpass -p vagrant  ssh -oStrictHostKeyChecking=no docker01 docker service create --mode global --name web -p 10080:80 mlucasdasilva/minhaweb:0.2
-SCRIPT
-
 $nginx_layer7 = <<-SCRIPT
-sudo cp /vagrant/servico-http-docker.conf /etc/nginx/conf.d/
 sudo cp /vagrant/servico-http-google.conf /etc/nginx/conf.d/ 
 sudo service nginx restart
 SCRIPT
@@ -83,9 +69,7 @@ Vagrant.configure("2") do |config|
   # Preparando a máquina para rodar o cluster swarm e instalando utilitários
   sd_nginx01.vm.provision "shell", inline: $nginx
   sd_nginx01.vm.provision "shell", inline: $nginx_master
-  sd_nginx01.vm.provision "shell", inline: $nginx_layer4
   sd_nginx01.vm.provision "shell", inline: $nginx_layer7
-  sd_nginx01.vm.provision "shell", inline: $port10080_servico_docker
  end
 
  config.vm.define "sd_nginx02" do |sd_nginx02|
@@ -106,7 +90,6 @@ Vagrant.configure("2") do |config|
   # Preparando a máquina para rodar o cluster swarm e instalando utilitários
   sd_nginx02.vm.provision "shell", inline: $nginx
   sd_nginx02.vm.provision "shell", inline: $nginx_backup
-  sd_nginx02.vm.provision "shell", inline: $nginx_layer4
   sd_nginx02.vm.provision "shell", inline: $nginx_layer7
  end
 
