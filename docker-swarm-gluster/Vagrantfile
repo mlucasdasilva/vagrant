@@ -19,60 +19,6 @@ setenforce 0
 sudo cat /vagrant/hosts >> /etc/hosts
 SCRIPT
 
-$nginx = <<-SCRIPT
-sudo yum install epel-release -y
-sudo yum install htop git vim nginx keepalived sshpass -y
-sudo systemctl start nginx
-sudo systemctl enable nginx
-sudo systemctl start keepalived
-sudo systemctl enable keepalived
-sudo service firewalld stop
-sudo systemctl disable firewalld
-sudo cp /etc/ssh/sshd_config /etc/ssh/sshd_config.bkp
-sudo cp /vagrant/sshd_config /etc/ssh/sshd_config
-sudo service sshd restart
-setenforce 0
-sudo cat /vagrant/hosts >> /etc/hosts
-SCRIPT
-
-$nginx_master = <<-SCRIPT
-sudo systemctl stop keepalived
-sudo cp /etc/keepalived/keepalived.conf /etc/keepalived/keepalived.conf.bkp
-sudo cp /vagrant/keepalived-backup.conf /etc/keepalived/keepalived.conf
-sudo systemctl start keepalived
-SCRIPT
-
-$nginx_backup = <<-SCRIPT
-sudo systemctl stop keepalived
-sudo cp /etc/keepalived/keepalived.conf /etc/keepalived/keepalived.conf.bkp
-sudo cp /vagrant/keepalived-backup.conf /etc/keepalived/keepalived.conf
-sudo systemctl start keepalived
-SCRIPT
-
-$nginx_layer4 = <<-SCRIPT
-sudo mkdir /etc/nginx/conf2.d
-sudo echo "include /etc/nginx/conf2.d/*.conf;" >> /etc/nginx/nginx.conf
-sudo cp /vagrant/port10080.docker-cluster.conf  /etc/nginx/conf2.d/port10080.docker-cluster.conf 
-sudo service nginx restart
-SCRIPT
-
-$port10080_servico_docker = <<-SCRIPT
-sshpass -p vagrant  ssh -oStrictHostKeyChecking=no docker01 docker service rm web
-sleep 5
-sshpass -p vagrant  ssh -oStrictHostKeyChecking=no docker01 docker service create --mode global --name web -p 10080:80 mlucasdasilva/minhaweb:0.2
-SCRIPT
-
-$nginx_layer7 = <<-SCRIPT
-sudo cp /vagrant/servico-http-docker.conf /etc/nginx/conf.d/
-sudo cp /vagrant/servico-http-google.conf /etc/nginx/conf.d/ 
-sudo service nginx restart
-SCRIPT
-
-$nginx_rsync = <<-SCRIPT
-sshpass -p vagrant rsync  -e "ssh -o StrictHostKeyChecking=no"  -avzh  root@nginx01:/etc/nginx/conf.d/   /etc/nginx/conf.d/
-sshpass -p vagrant rsync  -e "ssh -o StrictHostKeyChecking=no"  -avzh  root@nginx01:/etc/nginx/conf2.d/  /etc/nginx/conf2.d/
-SCRIPT
-
 $glusterfs = <<-SCRIPT
 sudo yum install  -y wget centos-release-gluster  epel-release
 sudo yum install  -y glusterfs-server
@@ -255,51 +201,7 @@ Vagrant.configure("2") do |config|
   # Preparando a máquina para rodar o cluster swarm e instalando utilitários
   sd_docker04.vm.provision "shell", inline: $configurando_vm
   sd_docker04.vm.provision "shell", inline: "eval $( sshpass -p vagrant  ssh -oStrictHostKeyChecking=no docker01   docker swarm join-token worker | grep token )"
- end
-
-
-
- config.vm.define "sd_nginx01" do |sd_nginx01|
-  # Conf básica na VM
-  sd_nginx01.vm.provider "virtualbox" do |v|
-   v.name = "sd_nginx01"
-#   v.memory = 512
-   v.memory = 384
-   v.cpus = 1
-#   v.gui = true
-  end
-  # Conf básica no S.O
-  sd_nginx01.vm.box = "centos/7"
-  sd_nginx01.vm.hostname = "nginx01"
-  sd_nginx01.vm.network "private_network", ip: "192.168.56.71"
-  sd_nginx01.vm.network "private_network", ip: "192.168.50.71", virtualbox__intnet: "dcnet1"
-  sd_nginx01.vm.network "forwarded_port", id: "ssh", guest: 22, host: 11221, auto_correct: true, protocol: "tcp"
-  sd_nginx01.vm.provision "shell", inline: $nginx
-  sd_nginx01.vm.provision "shell", inline: $nginx_master
-  sd_nginx01.vm.provision "shell", inline: $nginx_layer4
-  sd_nginx01.vm.provision "shell", inline: $nginx_layer7
-  sd_nginx01.vm.provision "shell", inline: $port10080_servico_docker
- end
-
- config.vm.define "sd_nginx02" do |sd_nginx02|
-  # Conf básica na VM
-  sd_nginx02.vm.provider "virtualbox" do |v|
-   v.name = "sd_nginx02"
-#   v.memory = 512
-   v.memory = 384
-   v.cpus = 1
-#   v.gui = true
-  end
-  # Conf básica no S.O
-  sd_nginx02.vm.box = "centos/7"
-  sd_nginx02.vm.hostname = "nginx02"
-  sd_nginx02.vm.network "private_network", ip: "192.168.56.72"
-  sd_nginx02.vm.network "private_network", ip: "192.168.50.72", virtualbox__intnet: "dcnet1"
-  sd_nginx02.vm.network "forwarded_port", id: "ssh", guest: 22, host: 11222, auto_correct: true, protocol: "tcp"
-  sd_nginx02.vm.provision "shell", inline: $nginx
-  sd_nginx02.vm.provision "shell", inline: $nginx_backup
-  sd_nginx02.vm.provision "shell", inline: $nginx_layer4
-  sd_nginx02.vm.provision "shell", inline: $nginx_layer7
+  sd_docker04.vm.provision "shell", inline: $gluster_client
  end
 
 

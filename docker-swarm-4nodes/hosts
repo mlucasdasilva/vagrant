@@ -1,0 +1,23 @@
+
+
+192.168.56.61   docker01
+192.168.56.62   docker02
+192.168.56.63   docker03
+192.168.56.64   docker04
+192.168.56.70   nginx    vip  vip70
+192.168.56.71   nginx01
+192.168.56.72   nginx02
+192.168.56.41   gluster01
+192.168.56.42   gluster02
+192.168.56.43   gluster03
+
+192.168.50.61   docker01-int
+192.168.50.62   docker02-int
+192.168.50.63   docker03-int
+192.168.50.64   docker04-int
+192.168.50.71   nginx01-int
+192.168.50.72   nginx02-int
+192.168.50.41   gluster01-int
+192.168.50.42   gluster02-int
+192.168.50.43   gluster03-int
+
