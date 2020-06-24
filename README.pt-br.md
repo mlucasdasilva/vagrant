@@ -2,18 +2,18 @@
 
 Scripts para Vagrant com Virtualbox
 
-*Leia em outras línguas: [English](README.md), [Portugues-BR](README.pt-br.md)
+*Read this in other languages: [English](README.md), [Portugues-BR](README.pt-br.md)
 
-These scripts were executed in windows10 host with Vagrant and VirtualBox packages:
+Estes scripts foram executadas em desktop host windows10 com os pacotes Vagrant e VirtualBox instalados
 
-Requisites:
-- Install VirtualBox (tested with version 6.1.4)
-- Install Git  (tested with version 2.26.0 for windows 64 bits)
-- Install Vagrant (tested with version 2.2.7)
+Requisitos do seu desktop:
+- Instale VirtualBox (utilizei a versao 6.1.4)
+- Instale Git  (utilizei a versao 2.26.0 for windows 64 bits)
+- Instale Vagrant (utilizei a versao 2.2.7)
 
-With all components installed you just need to do...
-Using some command line utilility, like cmd.exe in windows10, go to some workdir, do a "git clone <...>"
-After download the the repository from github...
-Go to the desired projet/stack subdir, eg: vagrant/docker-swarm and then execute "vagrant up". 
+Com todos os componentes instalados basta fazer...
+Utilizando um prompt de comandos, como o cmd.exe no windows10, va para um diretorio de trabalho e faça um "git clone <...>"
+Após baixar o repositório do github...
+Vá para o subdiretório do projeto que deseja iniciar, por exemplo, vagrant/docker-swarm e execute um "vagrant up".
 
-In the end you can remove all VMs created with "vagrant destroy -f"
+Ao final, você pode remover todas as VMs criadas utilizando "vagrant destroy -f"
