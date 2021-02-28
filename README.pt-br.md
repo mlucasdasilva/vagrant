@@ -15,5 +15,6 @@ Com todos os componentes instalados basta fazer...
 Utilizando um prompt de comandos, como o cmd.exe no windows10, va para um diretorio de trabalho e faça um "git clone <...>"
 Após baixar o repositório do github...
 Vá para o subdiretório do projeto que deseja iniciar, por exemplo, vagrant/docker-swarm e execute um "vagrant up".
+Voce também pode inicar apenas uma VM especifica com o comando "vagrant up <<vm name>>" Ex: "vagrant up sd_docker01"
 
 Ao final, você pode remover todas as VMs criadas utilizando "vagrant destroy -f"
